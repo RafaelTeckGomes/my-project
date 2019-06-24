@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<order>
+	<items>
+	  <item>  		
+	      <description>item-1</description>
+	      <quantity>2000</quantity>
+	      <unitaryValue>1</unitaryValue>
+	  </item>
+	  <item>
+	      <description>item-2</description>
+	      <quantity>1000</quantity>
+	      <unitaryValue>9.00</unitaryValue>
+	  </item>
+	  <item>
+	      <description>item-3</description>
+	      <quantity>600</quantity>
+	      <unitaryValue>12.00</unitaryValue>
+	  </item>
+	</items>
+</order>

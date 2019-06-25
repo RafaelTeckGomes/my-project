@@ -17,10 +17,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import com.project.test.demo.exception.OrderNotFoundException;
 import com.project.test.demo.model.Item;
 import com.project.test.demo.model.Order;
 import com.project.test.demo.service.OrderService;
-import com.project.test.demo.util.exception.OrderNotFoundException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DemoApplicationTests {

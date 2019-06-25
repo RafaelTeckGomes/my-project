@@ -1,7 +1,7 @@
 package com.project.test.demo.dao;
 
+import com.project.test.demo.exception.OrderNotFoundException;
 import com.project.test.demo.model.Order;
-import com.project.test.demo.util.exception.OrderNotFoundException;
 
 public interface OrderDao {
 

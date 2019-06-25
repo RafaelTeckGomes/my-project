@@ -6,11 +6,11 @@ import org.springframework.stereotype.Service;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.project.test.demo.dao.OrderDao;
+import com.project.test.demo.exception.OrderNotFoundException;
 import com.project.test.demo.model.Order;
 import com.project.test.demo.queue.QueueOrder;
 import com.project.test.demo.service.OrderService;
 import com.project.test.demo.util.OrderEnum;
-import com.project.test.demo.util.exception.OrderNotFoundException;
 
 @Service
 public class OrderServiceImpl implements OrderService {

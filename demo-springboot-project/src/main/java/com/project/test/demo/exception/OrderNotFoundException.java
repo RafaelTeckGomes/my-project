@@ -1,4 +1,4 @@
-package com.project.test.demo.util.exception;
+package com.project.test.demo.exception;
 
 public class OrderNotFoundException extends Exception {
 

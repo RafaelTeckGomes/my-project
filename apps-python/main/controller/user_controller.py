@@ -1,15 +1,22 @@
 from flask import Flask,jsonify
-from main.service.user_service import getUserById   
+from main.service import user_service   
 
 
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/new-user', methods=['POST'])
 def create_new_user():
-    user = getUserById(123)
+    user = user_service.create_new_user()
     return jsonify(user.__str__())
 
+
+
+@app.route('/get-user/<idUser>',methods=['GET'])
+def getUser(idUser):
+    user = user_service.get_user_by_Id(idUser)
+    return jsonify(user.__str__())
+    
 
 
 if __name__ == '__main__':

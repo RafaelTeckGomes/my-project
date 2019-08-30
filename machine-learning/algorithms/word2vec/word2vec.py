@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[46]:
-
-
 import gzip
 import gensim
 import logging
@@ -30,7 +24,7 @@ def readFile(input_file):
     with open (input_file, "r") as myfile:
         for line in myfile:
             yield gensim.utils.simple_preprocess(line)
-            
+
 def saveModel(model):
     session = boto3.Session()
     s3 = session.resource('s3')
@@ -38,7 +32,7 @@ def saveModel(model):
     f = pickle.dumps(model)
     obj.put(Body=f)
     print 'model saved in the bucket: [ '+bucketName+' ]'
-            
+
 def saveFile(dataList):
     fileName = 'fields.source'
     mapping = [ ("[", ""), ("]", ""), ("'", ""), (","," ")]
@@ -48,12 +42,12 @@ def saveFile(dataList):
             for k, v in mapping:
                 value = value.replace(k, v)
             f.write(value + '\n')
-             
-    
+
+
     client = boto3.client('s3')
     client.upload_file(fileName, bucketName, 'fields.source')
 
-            
+
 def transformFileData():
     s3 = boto3.resource('s3')
     bucket = s3.Bucket(bucketName)
@@ -63,13 +57,13 @@ def transformFileData():
             path, filename = os.path.split(obj.key)
             if ".csv" in filename:
                 listFiles.append(filename)
-    data = {} 
+    data = {}
     for fileNameOriginal in listFiles:
         print("Applying transformation on file: [ "+fileNameOriginal+" ]")
         destinationFile = fileNameOriginal+'_tmp'
         session = boto3.Session()
         s3 = session.resource('s3')
-        s3.meta.client.download_file(bucketName,sourceFolder+fileNameOriginal, destinationFile) 
+        s3.meta.client.download_file(bucketName,sourceFolder+fileNameOriginal, destinationFile)
         data_row = {}
         with open(destinationFile, 'r') as csvfile:
             spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
@@ -84,34 +78,34 @@ def transformFileData():
 
     #saveFile(data)
     print 'File saved in the bucket: [ '+bucketName+' ]'
-    return  listFiles       
-      
-    
-    
+    return  listFiles
+
+
+
 def createInitialModel():
     destinationFile = 'fields.source'
     session = boto3.Session()
     s3 = session.resource('s3')
-    s3.meta.client.download_file(bucketName, 'fields.source', destinationFile) 
+    s3.meta.client.download_file(bucketName, 'fields.source', destinationFile)
     documents = list(readFile(destinationFile))
-    
+
     model = Word2Vec(
         documents,
         window=10,
         min_count=2,
         workers=10)
     saveModel(model)
-    
+
 def getModel():
     destinationFile = 'model.pkl'
     session = boto3.Session()
     s3 = session.resource('s3')
-    s3.meta.client.download_file(bucketName, 'model.pkl', destinationFile) 
+    s3.meta.client.download_file(bucketName, 'model.pkl', destinationFile)
     f = open("model.pkl", "rb")
     model = pickle.load(f)
     return model
-    
-    
+
+
 def training():
     print "Training the model..."
     print "Building vocabulary..."
@@ -119,39 +113,39 @@ def training():
     destinationFile = "model.pkl"
     session = boto3.Session()
     s3 = session.resource('s3')
-    s3.meta.client.download_file(bucketName, 'model.pkl', destinationFile) 
+    s3.meta.client.download_file(bucketName, 'model.pkl', destinationFile)
     model.build_vocab(destinationFile, update=True)
     model.train(destinationFile, total_examples=model.corpus_count, epochs=model.iter)
     print 'Model trained'
-        
-        
-def showResults(model):   
+
+
+def showResults(model):
 
     w1 = ["first_name"]
     resultList = list()
     result = model.wv.most_similar(positive=w1,topn=10)
     for x in result:
         resultList.append(x[0])
-        
-    print ""
-    print "Next Suggestions based on [ "+w1[0]+" ]"
-    print ""
-    print resultList
-    print "######################################################################################"
-    
-    w1 = ["home_address"]
-    resultList = list()
-    result = model.wv.most_similar(positive=w1,topn=10)
-    for x in result:
-        resultList.append(x[0])
-    
+
     print ""
     print "Next Suggestions based on [ "+w1[0]+" ]"
     print ""
     print resultList
     print "######################################################################################"
 
-    
+    w1 = ["home_address"]
+    resultList = list()
+    result = model.wv.most_similar(positive=w1,topn=10)
+    for x in result:
+        resultList.append(x[0])
+
+    print ""
+    print "Next Suggestions based on [ "+w1[0]+" ]"
+    print ""
+    print resultList
+    print "######################################################################################"
+
+
     X = model[model.wv.vocab]
     pca = PCA(n_components=2)
     result = pca.fit_transform(X)
@@ -160,17 +154,17 @@ def showResults(model):
     words = list(model.wv.vocab)
     for i, word in enumerate(words):
         plt.annotate(word, xy=(result[i, 0], result[i, 1]))
-    
+
     plt.show()
 
 
-    
+
 
 def init():
     modelFile = 'model.pkl'
     session = boto3.Session()
     s3 = session.resource('s3')
-    s3.meta.client.download_file(bucketName, modelFile, modelFile) 
+    s3.meta.client.download_file(bucketName, modelFile, modelFile)
     f = open("model.pkl", "rb")
     model = pickle.load(f)
     print("Done reading data file")
@@ -182,19 +176,6 @@ def init():
 
 if __name__ == '__main__':
     transformFileData()
-    #createInitialModel()
-    #training()
-    #init()
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
+    createInitialModel()
+    training()
+    init()

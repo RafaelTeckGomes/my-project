@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.test.demo.exception.OrderNotFoundException;
@@ -16,16 +17,15 @@ import com.project.test.demo.service.OrderService;
 import com.project.test.demo.util.OrderEnum;
 
 @RestController
-@RequestMapping(path = "/services")
+@RequestMapping(path = "/")
 public class MyController {
 
 	Logger logger = Logger.getLogger(MyController.class);
 
 	@Autowired
 	private OrderService orderService;
-	
-	
-	//Method receive a xml payload and add a queue to process async.
+
+	// Method receive a xml payload and add a queue to process async.
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_XML_VALUE, value = "/processOrder")
 	public ResponseEntity<String> process(@RequestBody Order order) {
 		if (order != null) {
@@ -36,7 +36,7 @@ public class MyController {
 		return ResponseEntity.noContent().build();
 	}
 
-	//Method to return a order in json format.
+	// Method to return a order in json format.
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, value = "/getOrder")
 	public ResponseEntity<Object> process(@RequestParam Long id) {
 		if (id != null) {
@@ -50,6 +50,18 @@ public class MyController {
 			return ResponseEntity.ok(order);
 		}
 		return ResponseEntity.noContent().build();
+	}
+
+	@RequestMapping(value = "/home", method = RequestMethod.GET)
+	public String hello() {
+		return "Hello buddy!";
+	}
+	
+	@RequestMapping("/users")
+	@ResponseBody
+	public String getUsers() {
+		return "{\"users\":[{\"name\":\"Lucas\", \"country\":\"Brazil\"}," +
+		           "{\"name\":\"Jackie\",\"country\":\"China\"}]}";
 	}
 
 }

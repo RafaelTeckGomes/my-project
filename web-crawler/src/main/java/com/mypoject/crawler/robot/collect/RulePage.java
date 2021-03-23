@@ -16,7 +16,7 @@ import edu.uci.ics.crawler4j.url.WebURL;
 
 @Component
 public class RulePage {
-	
+
 	@Autowired
 	private UrlProcessor urlProcessor;
 
@@ -45,12 +45,17 @@ public class RulePage {
 	}
 
 	private CrawledPage createEntity(Page page) {
-		CrawledPage crawledPage = new CrawledPage.Builder().id(new Random().nextInt(10)).url(page.getWebURL().getURL()).dateUrlFound(new Date()).build();
+		CrawledPage crawledPage = new CrawledPage.Builder().id(new Random().nextInt(10)).url(page.getWebURL().getURL())
+				.dateUrlFound(new Date()).build();
 		return crawledPage;
 	}
-	
+
 	private void callPageService(CrawledPage page) {
-		urlProcessor.send(page);
+		try {
+			urlProcessor.send(page);
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 }

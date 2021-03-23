@@ -25,9 +25,13 @@ public class UrlProcessor {
 	private Invocation.Builder invocationBuilder;
 
 	public void send(CrawledPage page) {
-		Response response = getInstance().post(Entity.entity(page, MediaType.APPLICATION_JSON));
-		if (response.getStatus() != 200) {
-			System.err.println("Unable to connect to the server");
+		try {
+			Response response = getInstance().post(Entity.entity(page, MediaType.APPLICATION_JSON));
+			if (response.getStatus() != 200) {
+				System.err.println("Unable to connect to the server");
+			}
+		} catch (Exception e) {
+			System.out.println(e);
 		}
 	}
 

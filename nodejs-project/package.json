@@ -6,7 +6,7 @@
     "ejs": "~1.0.0",
     "express": "^4.0.0",
     "express-generator": "^4.16.1",
-    "mongoose": "^5.6.3",
+    "mongoose": "^5.7.5",
     "mysql": "*"
   }
 }
